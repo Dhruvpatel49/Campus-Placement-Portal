@@ -1,0 +1,204 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Campus Placement Portal REST API",
+    "version": "1.0.0",
+    "description": "Comprehensive, production-ready RESTful API specification for the Campus Placement Portal platform."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "tags": ["Health"],
+        "responses": {
+          "200": { "description": "Server operating normally" }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "Register new account (Student, Recruiter, or Company Admin)",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password", "role"],
+                "properties": {
+                  "name": { "type": "string", "example": "Jane Doe" },
+                  "email": { "type": "string", "example": "jane@example.com" },
+                  "password": { "type": "string", "example": "Password123!" },
+                  "role": { "type": "string", "enum": ["student", "recruiter", "company", "admin"], "example": "student" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Account created successfully" },
+          "400": { "description": "Validation error or User already exists" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate user & return JWT tokens",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "jane@example.com" },
+                  "password": { "type": "string", "example": "Password123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Logged in successfully" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Log out user and clear refresh token cookies",
+        "tags": ["Authentication"],
+        "responses": {
+          "200": { "description": "Logged out successfully" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get authenticated user profile details",
+        "tags": ["Authentication"],
+        "responses": {
+          "200": { "description": "Current user data retrieved" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/student/profile": {
+      "get": {
+        "summary": "Get authenticated student academic profile",
+        "tags": ["Student"],
+        "responses": {
+          "200": { "description": "Student profile retrieved" }
+        }
+      },
+      "put": {
+        "summary": "Update student academic profile details",
+        "tags": ["Student"],
+        "responses": {
+          "200": { "description": "Student profile updated successfully" }
+        }
+      }
+    },
+    "/company": {
+      "get": {
+        "summary": "Get list of registered placement companies",
+        "tags": ["Company"],
+        "responses": {
+          "200": { "description": "List of companies retrieved" }
+        }
+      }
+    },
+    "/jobs": {
+      "get": {
+        "summary": "Browse active campus placement drives",
+        "tags": ["Jobs"],
+        "parameters": [
+          { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Search job title or keyword" },
+          { "name": "jobType", "in": "query", "schema": { "type": "string" }, "description": "Filter by job type" },
+          { "name": "workMode", "in": "query", "schema": { "type": "string" }, "description": "Filter by work mode" }
+        ],
+        "responses": {
+          "200": { "description": "List of active placement jobs" }
+        }
+      },
+      "post": {
+        "summary": "Create new placement drive posting (Recruiter/Company)",
+        "tags": ["Jobs"],
+        "responses": {
+          "201": { "description": "Job drive posting created" }
+        }
+      }
+    },
+    "/jobs/{id}": {
+      "get": {
+        "summary": "Get detailed information for a specific job drive",
+        "tags": ["Jobs"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Job details retrieved" },
+          "404": { "description": "Job not found" }
+        }
+      }
+    },
+    "/applications": {
+      "get": {
+        "summary": "Get candidate job applications",
+        "tags": ["Applications"],
+        "responses": {
+          "200": { "description": "List of student applications" }
+        }
+      },
+      "post": {
+        "summary": "Submit application for a campus placement drive",
+        "tags": ["Applications"],
+        "responses": {
+          "201": { "description": "Application submitted successfully" }
+        }
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "summary": "Get platform analytics overview (Admin only)",
+        "tags": ["Admin"],
+        "responses": {
+          "200": { "description": "Platform statistics and metrics" },
+          "403": { "description": "Forbidden - Admin access required" }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "summary": "Get user notifications",
+        "tags": ["Notifications"],
+        "responses": {
+          "200": { "description": "List of user notifications" }
+        }
+      }
+    }
+  }
+}
