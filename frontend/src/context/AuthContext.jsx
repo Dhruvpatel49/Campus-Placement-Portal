@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data);
       }
     } catch {
+      localStorage.removeItem('placify_token');
       setUser(null);
     } finally {
       setLoading(false);
@@ -27,20 +28,28 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const res = await authService.login(credentials);
-    if (res && res.data) {
+    if (res && res.data && res.data.user) {
+      if (res.data.accessToken) {
+        localStorage.setItem('placify_token', res.data.accessToken);
+      }
       setUser(res.data.user);
       toast.success(res.message || 'Logged in successfully!');
       return res.data.user;
     }
+    throw new Error(res?.message || 'Login failed. Please check your credentials.');
   };
 
   const register = async (userData) => {
     const res = await authService.register(userData);
-    if (res && res.data) {
+    if (res && res.data && res.data.user) {
+      if (res.data.accessToken) {
+        localStorage.setItem('placify_token', res.data.accessToken);
+      }
       setUser(res.data.user);
       toast.success('Registration successful!');
       return res.data.user;
     }
+    throw new Error(res?.message || 'Registration failed.');
   };
 
   const logout = async () => {
@@ -49,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.error(e);
     } finally {
+      localStorage.removeItem('placify_token');
       setUser(null);
       toast.success('Logged out successfully');
     }

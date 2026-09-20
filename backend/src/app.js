@@ -19,9 +19,32 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
+const allowedOrigins = [
+  config.clientUrl,
+  'https://placify-two-orpin.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: config.clientUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        (typeof config.clientUrl === 'string' &&
+          config.clientUrl
+            .split(',')
+            .map((url) => url.trim())
+            .includes(origin))
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -67,7 +90,7 @@ if (config.nodeEnv === 'development') {
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Campus Placement Portal API Server is running',
+    message: 'Placify Campus Placement Portal API Server is running',
     version: '1.0.0',
     healthCheck: '/api/v1/health',
   });

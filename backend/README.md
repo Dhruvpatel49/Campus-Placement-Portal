@@ -1,6 +1,6 @@
-# Campus Placement Portal - Backend API
+# Placify - Campus Placement Portal - Backend API
 
-Production-ready modular Express.js REST API for the Campus Placement Portal platform.
+Production-ready modular Express.js REST API for Placify - Campus Placement Portal platform.
 
 ## Architecture
 

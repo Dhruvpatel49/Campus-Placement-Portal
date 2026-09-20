@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: campus-placement-backend
+    name: placify-backend
     env: node
     region: singapore
     plan: free

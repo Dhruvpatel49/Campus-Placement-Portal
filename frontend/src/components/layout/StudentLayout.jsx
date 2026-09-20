@@ -63,7 +63,7 @@ export const StudentLayout = ({ children }) => {
                 <GraduationCap className="w-6 h-6" />
               </div>
               <span className="font-bold text-lg tracking-tight text-white group-hover:text-brand-400 transition">
-                Placement Portal
+                Placify
               </span>
             </Link>
 
@@ -144,7 +144,7 @@ export const StudentLayout = ({ children }) => {
       </main>
 
       <footer className="border-t border-slate-900 bg-slate-950 py-4 text-center text-xs text-slate-500">
-        © 2026 Campus Placement Portal — Student Workspace.
+        © 2026 Placify — Student Workspace.
       </footer>
     </div>
   );

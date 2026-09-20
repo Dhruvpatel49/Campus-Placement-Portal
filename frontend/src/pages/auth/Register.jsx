@@ -21,9 +21,10 @@ export const Register = () => {
     setLoading(true);
     try {
       const user = await register(formData);
-      if (user?.role === 'recruiter' || user?.role === 'company') {
+      if (!user) return;
+      if (user.role === 'recruiter' || user.role === 'company') {
         navigate('/recruiter/dashboard');
-      } else if (user?.role === 'admin') {
+      } else if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/student/dashboard');
@@ -45,7 +46,7 @@ export const Register = () => {
             <GraduationCap className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-slate-50">Create Account</h2>
-          <p className="text-xs text-slate-400">Join the Campus Placement Portal</p>
+          <p className="text-xs text-slate-400">Join Placify - Campus Placement Portal</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

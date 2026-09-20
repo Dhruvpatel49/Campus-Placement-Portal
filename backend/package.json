@@ -1,7 +1,7 @@
 {
-  "name": "campus-placement-portal-backend",
+  "name": "placify-backend",
   "version": "1.0.0",
-  "description": "Production-Ready Campus Placement Portal Backend API",
+  "description": "Placify - Campus Placement Portal Backend API",
   "main": "src/server.js",
   "type": "module",
   "scripts": {

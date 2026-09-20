@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Campus Placement Portal REST API",
+    "title": "Placify REST API",
     "version": "1.0.0",
-    "description": "Comprehensive, production-ready RESTful API specification for the Campus Placement Portal platform."
+    "description": "Comprehensive, production-ready RESTful API specification for Placify - Campus Placement Portal."
   },
   "servers": [
     {

@@ -15,9 +15,10 @@ export const Login = () => {
     setLoading(true);
     try {
       const user = await login(formData);
-      if (user?.role === 'recruiter' || user?.role === 'company') {
+      if (!user) return;
+      if (user.role === 'recruiter' || user.role === 'company') {
         navigate('/recruiter/dashboard');
-      } else if (user?.role === 'admin') {
+      } else if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/student/dashboard');
@@ -39,8 +40,8 @@ export const Login = () => {
           <div className="inline-flex p-3 rounded-2xl bg-brand-500/10 text-brand-400 ring-1 ring-brand-500/20">
             <GraduationCap className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-50">Welcome Back</h2>
-          <p className="text-xs text-slate-400">Sign in to access your placement dashboard</p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-50">Welcome to Placify</h2>
+          <p className="text-xs text-slate-400">Sign in to access your campus placement dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

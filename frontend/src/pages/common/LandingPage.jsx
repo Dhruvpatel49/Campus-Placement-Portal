@@ -29,7 +29,7 @@ export const LandingPage = () => {
             <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
               <GraduationCap className="w-6 h-6" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-white">Campus Placement Portal</span>
+            <span className="font-bold text-lg tracking-tight text-white">Placify</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -116,7 +116,7 @@ export const LandingPage = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        © 2026 Campus Placement Portal. Built with Node.js, Express, MongoDB & React.
+        © 2026 Placify. Built with Node.js, Express, MongoDB & React.
       </footer>
     </div>
   );
