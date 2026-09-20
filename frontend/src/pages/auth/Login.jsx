@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { GraduationCap, Mail, Lock, ArrowRight } from 'lucide-react';
+import { GraduationCap, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const Login = () => {
@@ -25,6 +25,32 @@ export const Login = () => {
       }
     } catch (err) {
       toast.error(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async (role) => {
+    const creds = {
+      student: { email: 'student@placify.edu', password: 'password123' },
+      recruiter: { email: 'recruiter@placify.edu', password: 'password123' },
+      admin: { email: 'admin@placify.edu', password: 'password123' },
+    }[role];
+
+    setFormData(creds);
+    setLoading(true);
+    try {
+      const user = await login(creds);
+      if (!user) return;
+      if (user.role === 'recruiter' || user.role === 'company') {
+        navigate('/recruiter/dashboard');
+      } else if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Demo login failed');
     } finally {
       setLoading(false);
     }
@@ -84,6 +110,43 @@ export const Login = () => {
             {!loading && <ArrowRight className="w-4 h-4" />}
           </button>
         </form>
+
+        {/* 1-Click Demo Logins */}
+        <div className="pt-2 border-t border-slate-800/80 space-y-2">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400 font-medium">
+            <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+            <span>Instant Demo Access (1-Click)</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleDemoLogin('student')}
+              className="px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/60 text-xs font-medium text-slate-200 transition flex flex-col items-center gap-1 hover:border-brand-500/50"
+            >
+              <span className="text-base">🎓</span>
+              <span>Student</span>
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleDemoLogin('recruiter')}
+              className="px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/60 text-xs font-medium text-slate-200 transition flex flex-col items-center gap-1 hover:border-purple-500/50"
+            >
+              <span className="text-base">🏢</span>
+              <span>Recruiter</span>
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleDemoLogin('admin')}
+              className="px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/60 text-xs font-medium text-slate-200 transition flex flex-col items-center gap-1 hover:border-amber-500/50"
+            >
+              <span className="text-base">🛡️</span>
+              <span>Admin</span>
+            </button>
+          </div>
+        </div>
 
         <div className="text-center text-xs text-slate-400">
           Don't have an account?{' '}

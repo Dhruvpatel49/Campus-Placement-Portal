@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getMockResponseForUrl } from './mockData';
 
 // Resolve base URL from environment or fallback to relative path for local proxy
 const getBaseURL = () => {
@@ -30,23 +31,50 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to format errors and detect invalid HTML responses from SPA rewrites
+// Response interceptor to format responses, catch HTML rewrites, and provide offline fallback
 api.interceptors.response.use(
   (response) => {
-    // Detect if API endpoint returned HTML instead of JSON (common when hosted on Vercel without backend proxy)
+    // If the response returned an HTML document (e.g. Vercel SPA rewrites for unmatched API routes)
     if (
       typeof response.data === 'string' &&
       (response.data.includes('<!DOCTYPE html>') || response.data.includes('<html'))
     ) {
+      const mock = getMockResponseForUrl(response.config.url, response.config.method, response.config.data);
+      if (mock) {
+        return mock;
+      }
       return Promise.reject(
         new Error(
-          'API server is not configured or unreachable. Please set VITE_API_BASE_URL in your environment variables.'
+          'API server is not configured or unreachable. Switched to offline demo mode.'
         )
       );
     }
     return response.data;
   },
-  (error) => {
+  async (error) => {
+    const isNetworkOrRouteError =
+      error.message === 'Network Error' ||
+      error.code === 'ERR_NETWORK' ||
+      !error.response ||
+      error.response?.status === 404 ||
+      error.response?.status === 405;
+
+    if (isNetworkOrRouteError && error.config) {
+      // Parse body if stringified
+      let body = error.config.data;
+      if (typeof body === 'string') {
+        try {
+          body = JSON.parse(body);
+        } catch {
+          // ignore
+        }
+      }
+      const mock = getMockResponseForUrl(error.config.url, error.config.method, body);
+      if (mock) {
+        return mock;
+      }
+    }
+
     const message =
       error.response?.data?.message ||
       (error.response?.data?.errors && error.response.data.errors.join('. ')) ||
@@ -57,4 +85,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
